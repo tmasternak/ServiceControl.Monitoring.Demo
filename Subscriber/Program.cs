@@ -23,18 +23,20 @@ namespace Subscriber
             var transportConfiguration = configuration.UseTransport<MsmqTransport>();
             configuration.UsePersistence<InMemoryPersistence>();
             configuration.SendFailedMessagesTo("error");
+            configuration.Recoverability().Immediate(a => a.NumberOfRetries(0));
+            configuration.Recoverability().Delayed(a => a.NumberOfRetries(0));
 
             transportConfiguration.Routing().RegisterPublisher(typeof(SampleEvent), "Publisher");
 
             configuration.RegisterComponents(c => c.RegisterSingleton(new ProgressReporter()));
 
-            var instanceId = ConfigurationManager.AppSettings["instanceId"];
+            string instanceId = ConfigurationManager.AppSettings["instanceId"];
 
             Console.Title = $"{instanceId}";
 
 #pragma warning disable 618
             configuration.EnableMetrics()
-                         .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10), instanceId);
+                         .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10));
 #pragma warning restore 618
 
             await Endpoint.Start(configuration);
