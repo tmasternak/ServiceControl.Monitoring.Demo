@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Messages;
 using NServiceBus;
 
-namespace Subscriber
+namespace PaymentProcessor
 {
     class Program
     {
@@ -19,14 +19,18 @@ namespace Subscriber
 
         static async Task AsyncMain()
         {
-            var configuration = new EndpointConfiguration("Subscriber");
+            var configuration = new EndpointConfiguration("PaymentProcessor");
             var transportConfiguration = configuration.UseTransport<MsmqTransport>();
             configuration.UsePersistence<InMemoryPersistence>();
             configuration.SendFailedMessagesTo("error");
-            configuration.Recoverability().Immediate(a => a.NumberOfRetries(0));
+            configuration.Recoverability().Immediate(a => a.NumberOfRetries(1));
             configuration.Recoverability().Delayed(a => a.NumberOfRetries(0));
 
-            transportConfiguration.Routing().RegisterPublisher(typeof(SampleEvent), "Publisher");
+            transportConfiguration.Routing().RegisterPublisher(typeof(PaymentReceived), "PaymentProcessor");
+            transportConfiguration.Routing().RegisterPublisher(typeof(OrderPlaced), "OrderSaga");
+            transportConfiguration.Routing().RegisterPublisher(typeof(OrderTimedOut), "OrderSaga");
+            transportConfiguration.Routing().RegisterPublisher(typeof(OrderCompleted), "OrderSaga");
+            transportConfiguration.Routing().RouteToEndpoint(typeof(PlaceOrder), "OrderSaga");
 
             configuration.RegisterComponents(c => c.RegisterSingleton(new ProgressReporter()));
 
@@ -36,7 +40,7 @@ namespace Subscriber
 
 #pragma warning disable 618
             configuration.EnableMetrics()
-                         .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10));
+                         .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10), "Payment Processor");
 #pragma warning restore 618
 
             await Endpoint.Start(configuration);
@@ -46,7 +50,7 @@ namespace Subscriber
         }
     }
 
-    public class SampleHandler : IHandleMessages<SampleEvent>
+    public class SampleHandler : IHandleMessages<OrderPlaced>
     {
         static long numberOfMessages;
         TimeSpan processingDelay;
@@ -61,7 +65,7 @@ namespace Subscriber
             failRandomly = bool.Parse(ConfigurationManager.AppSettings["failRandomly"]);
         }
 
-        public async Task Handle(SampleEvent message, IMessageHandlerContext context)
+        public async Task Handle(OrderPlaced message, IMessageHandlerContext context)
         {
             var messageNo = Interlocked.Increment(ref numberOfMessages);
 
@@ -73,6 +77,11 @@ namespace Subscriber
             }
 
             await Task.Delay(processingDelay);
+
+            await context.Publish(new PaymentReceived
+            {
+                OrderId = message.OrderId
+            });
         }
     }
 

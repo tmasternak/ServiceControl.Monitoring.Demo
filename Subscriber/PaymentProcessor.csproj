@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BD0DB9D4-48EB-40CC-8288-ACAF24D24429}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Subscriber</RootNamespace>
-    <AssemblyName>Subscriber</AssemblyName>
+    <RootNamespace>PaymentProcessor</RootNamespace>
+    <AssemblyName>PaymentProcessor</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -36,7 +36,7 @@
       <HintPath>..\packages\NServiceBus.6.3.4\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Metrics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NServiceBus.Metrics.1.2.0-alpha0001\lib\net452\NServiceBus.Metrics.dll</HintPath>
+      <HintPath>..\packages\NServiceBus.Metrics.1.2.0-alpha0002\lib\net452\NServiceBus.Metrics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -55,6 +55,7 @@
   <ItemGroup>
     <None Include="SubscriberB.App.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
@@ -69,7 +70,7 @@
   <PropertyGroup>
     <PostBuildEvent>rd /s /q $(SolutionDir)binaries\subscriberB
 mkdir $(SolutionDir)binaries\subscriberB
-xcopy /s $(SolutionDir)binaries\subscriberA  $(SolutionDir)binaries\subscriberB
+xcopy /s $(SolutionDir)binaries\SubscriberA  $(SolutionDir)binaries\subscriberB
 del /f $(SolutionDir)binaries\subscriberB\Subscriber.exe.config
 move $(SolutionDir)binaries\subscriberB\SubscriberB.App.config $(SolutionDir)binaries\subscriberB\Subscriber.exe.config</PostBuildEvent>
   </PropertyGroup>

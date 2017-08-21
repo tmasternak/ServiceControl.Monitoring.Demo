@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subscriber", "Subscriber\Subscriber.csproj", "{BD0DB9D4-48EB-40CC-8288-ACAF24D24429}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentProcessor", "Subscriber\PaymentProcessor.csproj", "{BD0DB9D4-48EB-40CC-8288-ACAF24D24429}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Publisher", "Publisher\Publisher.csproj", "{3E29C552-D254-437E-B714-3FE8D6190E81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderSite", "Publisher\OrderSite.csproj", "{3E29C552-D254-437E-B714-3FE8D6190E81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages", "Messages\Messages.csproj", "{4154F3CD-AE2D-4AE4-B724-BA13DC559A6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderSaga", "OrderSaga\OrderSaga.csproj", "{2289697E-6CF8-44EB-99F7-E9990E156BF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{4154F3CD-AE2D-4AE4-B724-BA13DC559A6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4154F3CD-AE2D-4AE4-B724-BA13DC559A6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4154F3CD-AE2D-4AE4-B724-BA13DC559A6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2289697E-6CF8-44EB-99F7-E9990E156BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2289697E-6CF8-44EB-99F7-E9990E156BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2289697E-6CF8-44EB-99F7-E9990E156BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2289697E-6CF8-44EB-99F7-E9990E156BF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
