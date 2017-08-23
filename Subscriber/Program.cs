@@ -40,7 +40,7 @@ namespace PaymentProcessor
 
 #pragma warning disable 618
             configuration.EnableMetrics()
-                         .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10), "Payment Processor");
+                         .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10), instanceId);
 #pragma warning restore 618
 
             await Endpoint.Start(configuration);

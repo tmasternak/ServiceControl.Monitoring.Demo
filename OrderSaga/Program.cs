@@ -1,5 +1,6 @@
 ﻿using Messages;
 using NServiceBus;
+using Raven.Client.Document;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,9 +19,16 @@ namespace OrderSaga
 
         static async Task AsyncMain()
         {
+            var raven = new RavenHost();
+
+
             var configuration = new EndpointConfiguration("OrderSaga");
             var transportConfiguration = configuration.UseTransport<MsmqTransport>();
-            configuration.UsePersistence<InMemoryPersistence>();
+
+            var persistence = configuration.UsePersistence<RavenDBPersistence>();
+            persistence.DoNotSetupDatabasePermissions();
+            persistence.SetDefaultDocumentStore(raven.documentStore);
+
             configuration.SendFailedMessagesTo("error");
 
             configuration.Recoverability().Immediate(a => a.NumberOfRetries(1));

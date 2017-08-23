@@ -8,5 +8,6 @@ namespace OrderSaga
         public Guid Id { get; set; }
         public string Originator { get; set; }
         public string OriginalMessageId { get; set; }
+        public Guid OrderId { get; set; }
     }
 }

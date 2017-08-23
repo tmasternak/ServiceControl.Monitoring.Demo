@@ -56,8 +56,8 @@ namespace OrderSaga
 
         protected override void ConfigureHowToFindSaga(SagaPropertyMapper<OrderSagaData> mapper)
         {
-            mapper.ConfigureMapping<PlaceOrder>(order => order.Id).ToSaga(saga => saga.Id);
-            mapper.ConfigureMapping<PaymentReceived>(payment => payment.OrderId).ToSaga(saga => saga.Id);
+            mapper.ConfigureMapping<PlaceOrder>(order => order.Id).ToSaga(saga => saga.OrderId);
+            mapper.ConfigureMapping<PaymentReceived>(payment => payment.OrderId).ToSaga(saga => saga.OrderId);
         }
     }
 }
