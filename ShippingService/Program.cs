@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Messages;
 using NServiceBus;
 
-namespace OrderSite
+namespace ShippingService
 {
     class Program
     {
@@ -16,7 +16,7 @@ namespace OrderSite
 
         static async Task AsyncMain()
         {
-            var configuration = new EndpointConfiguration("Orders.UI");
+            var configuration = new EndpointConfiguration("ShippingService");
             var transportConfiguration = configuration.UseTransport<MsmqTransport>();
             configuration.UsePersistence<InMemoryPersistence>();
             configuration.SendFailedMessagesTo("error");
@@ -32,50 +32,43 @@ namespace OrderSite
 
 #pragma warning disable 618
             configuration.EnableMetrics()
-                .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10), "Orders.UI");
+                .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10), "Shipping Service");
 #pragma warning restore 618
 
             var endpoint = await Endpoint.Start(configuration);
 
-            var random = new Random();
-
-            var continuousOrders = Task.Factory.StartNew(async () =>
-            {
-                while (true)
-                {
-                    await Task.Delay(random.Next(15000));
-
-                    await endpoint.Send(new PlaceOrder
-                    {
-                        Id = Guid.NewGuid()
-                    });
-                }
-            });
-
-            while (true)
-            {
-                var batchSize = 1000;
-                Console.WriteLine($"Press any <b> to publish {batchSize} events or any <key> to publish 1 event.");
-
-                if (Console.ReadKey().KeyChar == 'b')
-                {
-                    await Task.WhenAll(Enumerable.Range(1, batchSize).Select(_ => endpoint.Send<PlaceOrder>(se => { se.Id = Guid.NewGuid(); })));
-
-                    Console.WriteLine("Events sent");
-                }
-                else
-                {
-                    await endpoint.Send<PlaceOrder>(se => { se.Id = Guid.NewGuid(); });
-                }
-            }
+            Console.WriteLine("Endpoint started");
+            Console.ReadKey();
         }
     }
 
-    public class OrderCompletedHandler : IHandleMessages<OrderCompleted>
+    public class ShippingSaga : Saga<ShippingData>,
+        IAmStartedByMessages<PaymentReceived>,
+        IHandleMessages<StockReserved>
     {
-        public Task Handle(OrderCompleted message, IMessageHandlerContext context)
+        public async Task Handle(PaymentReceived message, IMessageHandlerContext context)
         {
-            return Task.CompletedTask;
+            Console.WriteLine("Reserving stock");
+
+            await context.Send(new ReserveStock { });
+
+            await context.Send(new SendEmail());
+        }
+
+        public async Task Handle(StockReserved message, IMessageHandlerContext context)
+        {
+            if (Data.NumberOfOutstandingItems-- == 0)
+            {
+                await context.Publish(new OrderStockReserved { OrderId = Data.OrderId });
+                await context.Send(new SendEmail());
+
+                MarkAsComplete();
+            }
+        }
+
+        protected override void ConfigureHowToFindSaga(SagaPropertyMapper<ShippingData> mapper)
+        {
+            mapper.ConfigureMapping<PaymentReceived>(payment => payment.OrderId).ToSaga(saga => saga.OrderId);
         }
     }
 }

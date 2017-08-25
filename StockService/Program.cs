@@ -1,14 +1,12 @@
 ﻿using Messages;
 using NServiceBus;
-using Raven.Client.Document;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderSaga
+namespace StockService
 {
     class Program
     {
@@ -19,20 +17,10 @@ namespace OrderSaga
 
         static async Task AsyncMain()
         {
-            var raven = new RavenHost();
-
-
-            var configuration = new EndpointConfiguration("OrderService");
+            var configuration = new EndpointConfiguration("StockService");
             var transportConfiguration = configuration.UseTransport<MsmqTransport>();
-
-            var persistence = configuration.UsePersistence<RavenDBPersistence>();
-            persistence.DoNotSetupDatabasePermissions();
-            persistence.SetDefaultDocumentStore(raven.documentStore);
-
+            configuration.UsePersistence<InMemoryPersistence>();
             configuration.SendFailedMessagesTo("error");
-
-            configuration.Recoverability().Immediate(a => a.NumberOfRetries(1));
-            configuration.Recoverability().Delayed(a => a.NumberOfRetries(0));
 
             transportConfiguration.Routing().RegisterPublisher(typeof(PaymentReceived), "PaymentProcessor");
             transportConfiguration.Routing().RegisterPublisher(typeof(OrderPlaced), "OrderSaga");
@@ -43,19 +31,27 @@ namespace OrderSaga
             transportConfiguration.Routing().RouteToEndpoint(typeof(ReserveStock), "StockService");
             transportConfiguration.Routing().RouteToEndpoint(typeof(SendEmail), "Emailer");
 
-            string instanceId = ConfigurationManager.AppSettings["instanceId"];
-
-            Console.Title = $"{instanceId}";
-
 #pragma warning disable 618
             configuration.EnableMetrics()
-                         .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10), instanceId);
+                .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10), "Stock Service");
 #pragma warning restore 618
 
-            await Endpoint.Start(configuration);
+            var endpoint = await Endpoint.Start(configuration);
 
             Console.WriteLine("Endpoint started");
             Console.ReadKey();
+        }
+    }
+
+    public class StockService : IHandleMessages<ReserveStock>
+    {
+        static Random random = new Random();
+
+        public async Task Handle(ReserveStock message, IMessageHandlerContext context)
+        {
+            await Task.Delay(random.Next(5000));
+
+            await context.Publish(new StockReserved());
         }
     }
 }

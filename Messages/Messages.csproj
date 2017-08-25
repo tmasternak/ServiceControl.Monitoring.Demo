@@ -45,10 +45,14 @@
   <ItemGroup>
     <Compile Include="OrderCompleted.cs" />
     <Compile Include="OrderPlaced.cs" />
+    <Compile Include="OrderStockReserved.cs" />
     <Compile Include="OrderTimedOut.cs" />
     <Compile Include="PlaceOrder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PaymentReceived.cs" />
+    <Compile Include="ReserveStock.cs" />
+    <Compile Include="SendEmail.cs" />
+    <Compile Include="StockReserved.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

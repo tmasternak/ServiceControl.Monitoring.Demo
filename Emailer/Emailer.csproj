@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3E29C552-D254-437E-B714-3FE8D6190E81}</ProjectGuid>
+    <ProjectGuid>{9C82D7FD-E57A-4823-9B54-84300C4AEB4D}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>OrderSite</RootNamespace>
-    <AssemblyName>OrderSite</AssemblyName>
+    <RootNamespace>Emailer</RootNamespace>
+    <AssemblyName>Emailer</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\binaries\ordersite\</OutputPath>
+    <OutputPath>..\binaries\Emailer\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

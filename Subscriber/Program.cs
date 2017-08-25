@@ -30,7 +30,10 @@ namespace PaymentProcessor
             transportConfiguration.Routing().RegisterPublisher(typeof(OrderPlaced), "OrderSaga");
             transportConfiguration.Routing().RegisterPublisher(typeof(OrderTimedOut), "OrderSaga");
             transportConfiguration.Routing().RegisterPublisher(typeof(OrderCompleted), "OrderSaga");
+            transportConfiguration.Routing().RegisterPublisher(typeof(StockReserved), "StockService");
             transportConfiguration.Routing().RouteToEndpoint(typeof(PlaceOrder), "OrderSaga");
+            transportConfiguration.Routing().RouteToEndpoint(typeof(ReserveStock), "StockService");
+            transportConfiguration.Routing().RouteToEndpoint(typeof(SendEmail), "Emailer");
 
             configuration.RegisterComponents(c => c.RegisterSingleton(new ProgressReporter()));
 
@@ -82,6 +85,8 @@ namespace PaymentProcessor
             {
                 OrderId = message.OrderId
             });
+
+            await context.Send(new SendEmail());
         }
     }
 

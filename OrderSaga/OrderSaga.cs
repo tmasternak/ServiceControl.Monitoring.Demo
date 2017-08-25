@@ -12,7 +12,8 @@ namespace OrderSaga
     public class OrderSaga : Saga<OrderSagaData>,
         IAmStartedByMessages<PlaceOrder>,
         IHandleMessages<PaymentReceived>,
-        IHandleTimeouts<PaymentTimedOut>
+        IHandleTimeouts<PaymentTimedOut>,
+        IHandleMessages<OrderStockReserved>
     {
         TimeSpan processingDelay;
         bool failRandomly;
@@ -37,12 +38,21 @@ namespace OrderSaga
                 OrderId = message.Id
             });
 
+            await context.Send(new SendEmail());
+
             await RequestTimeout(context, TimeSpan.FromMinutes(2), new PaymentTimedOut { OrderId = message.Id });
         }
 
         public async Task Handle(PaymentReceived message, IMessageHandlerContext context)
         {
             await context.Publish(new OrderCompleted { OrderId = message.OrderId });
+
+            await context.Send(new SendEmail());
+        }
+
+        public async Task Handle(OrderStockReserved message, IMessageHandlerContext context)
+        {
+            await context.Send(new SendEmail());
 
             MarkAsComplete();
         }
@@ -51,6 +61,8 @@ namespace OrderSaga
         {
             await context.Publish(new OrderTimedOut { OrderId = state.OrderId });
 
+            await context.Send(new SendEmail());
+
             MarkAsComplete();
         }
 
@@ -58,6 +70,7 @@ namespace OrderSaga
         {
             mapper.ConfigureMapping<PlaceOrder>(order => order.Id).ToSaga(saga => saga.OrderId);
             mapper.ConfigureMapping<PaymentReceived>(payment => payment.OrderId).ToSaga(saga => saga.OrderId);
+            mapper.ConfigureMapping<OrderStockReserved>(stock => stock.OrderId).ToSaga(saga => saga.OrderId);
         }
     }
 }
