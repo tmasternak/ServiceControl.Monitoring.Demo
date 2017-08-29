@@ -26,14 +26,7 @@ namespace PaymentProcessor
             configuration.Recoverability().Immediate(a => a.NumberOfRetries(1));
             configuration.Recoverability().Delayed(a => a.NumberOfRetries(0));
 
-            transportConfiguration.Routing().RegisterPublisher(typeof(PaymentReceived), "PaymentProcessor");
-            transportConfiguration.Routing().RegisterPublisher(typeof(OrderPlaced), "OrderSaga");
-            transportConfiguration.Routing().RegisterPublisher(typeof(OrderTimedOut), "OrderSaga");
-            transportConfiguration.Routing().RegisterPublisher(typeof(OrderCompleted), "OrderSaga");
-            transportConfiguration.Routing().RegisterPublisher(typeof(StockReserved), "StockService");
-            transportConfiguration.Routing().RouteToEndpoint(typeof(PlaceOrder), "OrderSaga");
-            transportConfiguration.Routing().RouteToEndpoint(typeof(ReserveStock), "StockService");
-            transportConfiguration.Routing().RouteToEndpoint(typeof(SendEmail), "Emailer");
+            transportConfiguration.Routing().RegisterPublisher(typeof(OrderPlaced), "OrderService");
 
             configuration.RegisterComponents(c => c.RegisterSingleton(new ProgressReporter()));
 

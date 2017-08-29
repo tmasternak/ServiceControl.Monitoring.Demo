@@ -16,7 +16,7 @@ namespace OrderSaga
             {
                 DataDirectory = "Data",
                 UseEmbeddedHttpServer = true,
-                DefaultDatabase = "OrderSaga",
+                DefaultDatabase = "OrderService",
                 Configuration =
                 {
                     Port = 32075,

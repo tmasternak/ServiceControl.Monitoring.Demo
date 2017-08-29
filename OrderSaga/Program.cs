@@ -23,7 +23,7 @@ namespace OrderSaga
 
 
             var configuration = new EndpointConfiguration("OrderService");
-            var transportConfiguration = configuration.UseTransport<MsmqTransport>();
+            var routing = configuration.UseTransport<MsmqTransport>().Routing();
 
             var persistence = configuration.UsePersistence<RavenDBPersistence>();
             persistence.DoNotSetupDatabasePermissions();
@@ -34,14 +34,14 @@ namespace OrderSaga
             configuration.Recoverability().Immediate(a => a.NumberOfRetries(1));
             configuration.Recoverability().Delayed(a => a.NumberOfRetries(0));
 
-            transportConfiguration.Routing().RegisterPublisher(typeof(PaymentReceived), "PaymentProcessor");
-            transportConfiguration.Routing().RegisterPublisher(typeof(OrderPlaced), "OrderSaga");
-            transportConfiguration.Routing().RegisterPublisher(typeof(OrderTimedOut), "OrderSaga");
-            transportConfiguration.Routing().RegisterPublisher(typeof(OrderCompleted), "OrderSaga");
-            transportConfiguration.Routing().RegisterPublisher(typeof(StockReserved), "StockService");
-            transportConfiguration.Routing().RouteToEndpoint(typeof(PlaceOrder), "OrderSaga");
-            transportConfiguration.Routing().RouteToEndpoint(typeof(ReserveStock), "StockService");
-            transportConfiguration.Routing().RouteToEndpoint(typeof(SendEmail), "Emailer");
+            routing.RegisterPublisher(typeof(PaymentReceived), "PaymentProcessor");
+            routing.RegisterPublisher(typeof(OrderPlaced), "OrderService");
+            routing.RegisterPublisher(typeof(OrderTimedOut), "OrderService");
+            routing.RegisterPublisher(typeof(OrderCompleted), "OrderService");
+            routing.RegisterPublisher(typeof(StockReserved), "StockService");
+            routing.RouteToEndpoint(typeof(PlaceOrder), "OrderService");
+            routing.RouteToEndpoint(typeof(ReserveStock), "StockService");
+            routing.RouteToEndpoint(typeof(SendEmail), "Emailer");
 
             string instanceId = ConfigurationManager.AppSettings["instanceId"];
 

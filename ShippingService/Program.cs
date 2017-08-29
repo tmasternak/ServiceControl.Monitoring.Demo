@@ -17,18 +17,14 @@ namespace ShippingService
         static async Task AsyncMain()
         {
             var configuration = new EndpointConfiguration("ShippingService");
-            var transportConfiguration = configuration.UseTransport<MsmqTransport>();
+            var routing = configuration.UseTransport<MsmqTransport>().Routing();
             configuration.UsePersistence<InMemoryPersistence>();
             configuration.SendFailedMessagesTo("error");
 
-            transportConfiguration.Routing().RegisterPublisher(typeof(PaymentReceived), "PaymentProcessor");
-            transportConfiguration.Routing().RegisterPublisher(typeof(OrderPlaced), "OrderSaga");
-            transportConfiguration.Routing().RegisterPublisher(typeof(OrderTimedOut), "OrderSaga");
-            transportConfiguration.Routing().RegisterPublisher(typeof(OrderCompleted), "OrderSaga");
-            transportConfiguration.Routing().RegisterPublisher(typeof(StockReserved), "StockService");
-            transportConfiguration.Routing().RouteToEndpoint(typeof(PlaceOrder), "OrderSaga");
-            transportConfiguration.Routing().RouteToEndpoint(typeof(ReserveStock), "StockService");
-            transportConfiguration.Routing().RouteToEndpoint(typeof(SendEmail), "Emailer");
+            routing.RegisterPublisher(typeof(PaymentReceived), "PaymentProcessor");
+            routing.RegisterPublisher(typeof(StockReserved), "StockService");
+            routing.RouteToEndpoint(typeof(ReserveStock), "StockService");
+            routing.RouteToEndpoint(typeof(SendEmail), "Emailer");
 
 #pragma warning disable 618
             configuration.EnableMetrics()
