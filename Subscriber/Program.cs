@@ -27,6 +27,7 @@ namespace PaymentProcessor
             configuration.Recoverability().Delayed(a => a.NumberOfRetries(0));
 
             transportConfiguration.Routing().RegisterPublisher(typeof(OrderPlaced), "OrderService");
+            transportConfiguration.Routing().RouteToEndpoint(typeof(SendEmail), "Emailer");
 
             configuration.RegisterComponents(c => c.RegisterSingleton(new ProgressReporter()));
 

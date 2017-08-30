@@ -65,6 +65,7 @@ namespace ShippingService
         protected override void ConfigureHowToFindSaga(SagaPropertyMapper<ShippingData> mapper)
         {
             mapper.ConfigureMapping<PaymentReceived>(payment => payment.OrderId).ToSaga(saga => saga.OrderId);
+            mapper.ConfigureMapping<StockReserved>(stock => stock.OrderId).ToSaga(saga => saga.OrderId);
         }
     }
 }

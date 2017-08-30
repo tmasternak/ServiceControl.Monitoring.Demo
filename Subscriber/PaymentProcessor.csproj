@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\binaries\subscriberA\</OutputPath>
+    <OutputPath>..\binaries\PaymentProcessorA\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,7 +53,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SubscriberB.App.config">
+    <None Include="PaymentProcessorB.App.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
@@ -68,10 +68,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rd /s /q $(SolutionDir)binaries\subscriberB
-mkdir $(SolutionDir)binaries\subscriberB
-xcopy /s $(SolutionDir)binaries\SubscriberA  $(SolutionDir)binaries\subscriberB
-del /f $(SolutionDir)binaries\subscriberB\Subscriber.exe.config
-move $(SolutionDir)binaries\subscriberB\SubscriberB.App.config $(SolutionDir)binaries\subscriberB\Subscriber.exe.config</PostBuildEvent>
+    <PostBuildEvent>rd /s /q $(SolutionDir)binaries\PaymentProcessorB
+mkdir $(SolutionDir)binaries\PaymentProcessorB
+xcopy /s $(SolutionDir)binaries\PaymentProcessorA  $(SolutionDir)binaries\PaymentProcessorB
+del /f $(SolutionDir)binaries\PaymentProcessorB\PaymentProcessor.exe.config
+move $(SolutionDir)binaries\PaymentProcessorB\PaymentProcessorB.App.config $(SolutionDir)binaries\PaymentProcessorB\PaymentProcessor.exe.config</PostBuildEvent>
   </PropertyGroup>
 </Project>
