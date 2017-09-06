@@ -36,7 +36,7 @@
       <HintPath>..\packages\NServiceBus.6.3.4\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Metrics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NServiceBus.Metrics.1.2.0-alpha0001\lib\net452\NServiceBus.Metrics.dll</HintPath>
+      <HintPath>..\packages\NServiceBus.Metrics.1.2.0-alpha0016\lib\net452\NServiceBus.Metrics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

@@ -21,6 +21,8 @@ namespace Publisher
             configuration.UsePersistence<InMemoryPersistence>();
             configuration.SendFailedMessagesTo("error");
 
+            configuration.Conventions().DefiningEventsAs(t => t.Namespace != null && t.Namespace == "Messages");
+
 #pragma warning disable 618
             configuration.EnableMetrics()
                 .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10));
@@ -35,13 +37,19 @@ namespace Publisher
 
                 if (Console.ReadKey().KeyChar == 'b')
                 {
-                    await Task.WhenAll(Enumerable.Range(1, batchSize).Select(_ => endpoint.Publish<SampleEvent>(se => { })));
+                    await Task.WhenAll(Enumerable.Range(1, batchSize).Select(_ =>
+                    {
+                        return Task.WhenAll(
+                            endpoint.Publish<SampleEvent>(se => { }),
+                            endpoint.Publish<YetAnotherEvent>(ae => { }));
+                    }));
 
                     Console.WriteLine("Events sent");
                 }
                 else
                 {
                     await endpoint.Publish<SampleEvent>(se => { });
+                    await endpoint.Publish<YetAnotherEvent>(ae => { });
                 }
             }
         }

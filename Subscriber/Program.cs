@@ -28,6 +28,8 @@ namespace Subscriber
 
             configuration.RegisterComponents(c => c.RegisterSingleton(new ProgressReporter()));
 
+            configuration.Conventions().DefiningEventsAs(t => t.Namespace != null && t.Namespace == "Messages");
+
             var instanceId = ConfigurationManager.AppSettings["instanceId"];
 
             Console.Title = $"{instanceId}";
@@ -44,7 +46,7 @@ namespace Subscriber
         }
     }
 
-    public class SampleHandler : IHandleMessages<SampleEvent>
+    public class SampleHandler : IHandleMessages<SampleEvent>, IHandleMessages<YetAnotherEvent>
     {
         static long numberOfMessages;
         TimeSpan processingDelay;
@@ -72,31 +74,12 @@ namespace Subscriber
 
             await Task.Delay(processingDelay);
         }
-    }
 
-    public class ProgressReporter
-    {
-        Task task;
-        long messageNo;
-
-        public ProgressReporter()
+        public Task Handle(YetAnotherEvent message, IMessageHandlerContext context)
         {
-            task = Task.Run(async () =>
-            {
-                while (true)
-                {
-                    Console.Write($"Event handled. No: {messageNo}.");
-
-                    Console.SetCursorPosition(0, Console.CursorTop);
-
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                }
-            });
-        }
-
-        public void Record(long messageNo)
-        {
-            this.messageNo = messageNo;
+            return Task.Delay(TimeSpan.FromSeconds(2));
         }
     }
+
+   
 }

@@ -1,5 +1,6 @@
 start .\binaries\SubscriberA\Subscriber.exe
 start .\binaries\SubscriberB\Subscriber.exe
+start .\binaries\SubscriberV5\SubscriberV5.exe
 start .\binaries\Publisher\Publisher.exe
 
 start c:\git\p\sc.monitoring\binaries\ServiceControl.Monitoring.exe
