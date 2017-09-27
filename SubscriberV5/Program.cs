@@ -27,7 +27,7 @@ namespace SubscriberV5
 
             configuration.RegisterComponents(c => c.RegisterSingleton(new ProgressReporter()));
 
-            configuration.SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", "Subscriber.V5");
+            configuration.SendMetricDataToServiceControl("Particular.Monitoring", "Subscriber.V5");
 
             using (Bus.Create(configuration).Start())
             {

@@ -25,7 +25,7 @@ namespace Publisher
 
 #pragma warning disable 618
             configuration.EnableMetrics()
-                .SendMetricDataToServiceControl("Particular.ServiceControl.Monitoring", TimeSpan.FromSeconds(10));
+                .SendMetricDataToServiceControl("Particular.Monitoring", TimeSpan.FromSeconds(10));
 #pragma warning restore 618
 
             var endpoint = await Endpoint.Start(configuration);
