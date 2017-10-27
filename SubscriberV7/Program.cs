@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Messages;
 using NServiceBus;
 
-namespace Subscriber
+namespace SubscriberV7
 {
     class Program
     {
@@ -35,7 +35,7 @@ namespace Subscriber
             Console.Title = $"{instanceId}";
 
             configuration.EnableMetrics()
-                         .SendMetricDataToServiceControl("Particular.Monitoring", TimeSpan.FromMilliseconds(100), instanceId);
+                .SendMetricDataToServiceControl("Particular.Monitoring", TimeSpan.FromMilliseconds(100), instanceId);
 
             await Endpoint.Start(configuration);
 
@@ -78,6 +78,4 @@ namespace Subscriber
             return Task.Delay(TimeSpan.FromSeconds(2));
         }
     }
-
-   
 }

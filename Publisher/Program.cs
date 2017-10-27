@@ -23,10 +23,8 @@ namespace Publisher
 
             configuration.Conventions().DefiningEventsAs(t => t.Namespace != null && t.Namespace == "Messages");
 
-#pragma warning disable 618
             configuration.EnableMetrics()
-                .SendMetricDataToServiceControl("Particular.Monitoring", TimeSpan.FromSeconds(10));
-#pragma warning restore 618
+                .SendMetricDataToServiceControl("Particular.Monitoring", TimeSpan.FromMilliseconds(100));
 
             var endpoint = await Endpoint.Start(configuration);
 
